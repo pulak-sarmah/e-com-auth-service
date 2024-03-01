@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "buid": "tsc",
-    "dev": "node ./dist/server.js"
+    "dev": "node ./dist/server.js",
+    "format:check": "prettier . --check",
+    "format:fix": "prettier . --write"
   },
   "author": "pulak sarmah <pulaksarmah333@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.11.24",
+    "prettier": "3.2.5",
     "typescript": "^5.3.3"
   }
 }
