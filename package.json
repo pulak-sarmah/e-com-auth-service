@@ -1,19 +1,24 @@
 {
-  "name": "auth_service",
-  "version": "1.0.0",
-  "description": "auth service for the e-commerce application",
-  "main": "index.js",
-  "scripts": {
-    "buid": "tsc",
-    "dev": "node ./dist/server.js",
-    "format:check": "prettier . --check",
-    "format:fix": "prettier . --write"
-  },
-  "author": "pulak sarmah <pulaksarmah333@gmail.com>",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^20.11.24",
-    "prettier": "3.2.5",
-    "typescript": "^5.3.3"
-  }
+    "name": "auth_service",
+    "version": "1.0.0",
+    "description": "auth service for the e-commerce application",
+    "main": "index.js",
+    "scripts": {
+        "buid": "tsc",
+        "dev": "node ./dist/server.js",
+        "format:check": "prettier . --check",
+        "format:fix": "prettier . --write",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
+    },
+    "author": "pulak sarmah <pulaksarmah333@gmail.com>",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^20.11.24",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "prettier": "3.2.5",
+        "typescript": "^5.3.3",
+        "typescript-eslint": "^7.1.0"
+    }
 }
