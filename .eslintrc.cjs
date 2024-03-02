@@ -1,7 +1,5 @@
+/* eslint-env node */
 module.exports = {
-    env: {
-        node: true,
-    },
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended-type-checked',
@@ -9,14 +7,14 @@ module.exports = {
     ],
     parser: '@typescript-eslint/parser',
     plugins: ['@typescript-eslint'],
-    include: ['./.eslintrc.js'],
     parserOptions: {
-        project: true,
+        project: './tsconfig.json',
         tsconfigRootDir: __dirname,
     },
     root: true,
     rules: {
         'no-console': 'error',
         'dot-notation': 'error',
+        '@typescript-eslint/require-await': 'off',
     },
 };
