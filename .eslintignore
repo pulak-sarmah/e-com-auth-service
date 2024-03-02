@@ -4,3 +4,4 @@ node_modules
 tests/
 .github
 .eslintrc.cjs
+jest.config.js
