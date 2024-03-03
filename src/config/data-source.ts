@@ -8,7 +8,7 @@ export const AppDataSource = new DataSource({
     host: Config.DB_HOST,
     port: parseInt(Config.DB_PORT!),
     username: Config.DB_USERNAME,
-    password: Config.DB_USERNAME,
+    password: Config.DB_PASS,
     database: Config.DB_NAME,
     synchronize: Config.NODE_ENV === 'test' || Config.NODE_ENV === 'dev', // false in production
     logging: false,
