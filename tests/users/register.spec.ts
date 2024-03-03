@@ -2,8 +2,8 @@ import { AppDataSource } from './../../src/config/data-source';
 import { DataSource } from 'typeorm';
 import request from 'supertest';
 import { app } from '../../src/app';
-import { truncateTable } from '../utils';
 import { User } from '../../src/entity/User';
+import { Roles } from '../../src/constants';
 
 describe('POST /auth/register', () => {
     let connection: DataSource;
@@ -13,7 +13,8 @@ describe('POST /auth/register', () => {
     });
 
     beforeEach(async () => {
-        await truncateTable(connection);
+        await connection.dropDatabase();
+        await connection.synchronize();
     });
 
     afterAll(async () => {
@@ -73,6 +74,37 @@ describe('POST /auth/register', () => {
             expect(user[0].firstName).toBe(userData.firstName);
             expect(user[0].lastName).toBe(userData.lastName);
             expect(user[0].email).toBe(userData.email);
+        });
+
+        it('must contain the id of the user', async () => {
+            const userData = {
+                firstName: 'john',
+                lastName: 'Doe',
+                email: 'johndoe@gmail.com',
+                password: 'secret',
+            };
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            expect(response.body).toHaveProperty('id');
+        });
+
+        it('should assign a customer role', async () => {
+            const userData = {
+                firstName: 'john',
+                lastName: 'Doe',
+                email: 'johndoe@gmail.com',
+                password: 'secret',
+            };
+            await request(app).post('/auth/register').send(userData);
+
+            const userRepository = connection.getRepository(User);
+            const user = await userRepository.find();
+
+            expect(user[0]).toHaveProperty('role');
+
+            expect(user[0].role).toBe(Roles.CUSTOMER);
         });
     });
 
