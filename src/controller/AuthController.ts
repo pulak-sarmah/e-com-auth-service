@@ -1,19 +1,16 @@
-import fs from 'fs';
 import { NextFunction, Response } from 'express';
+import { validationResult } from 'express-validator';
+import { JwtPayload } from 'jsonwebtoken';
 import { Logger } from 'winston';
 import { UserService } from '../services/UserService';
 import { RegisterUserRequest } from '../types';
-import { JwtPayload, sign } from 'jsonwebtoken';
-
-import { validationResult } from 'express-validator';
-import path from 'path';
-import createHttpError from 'http-errors';
-import { Config } from '../config';
+import { TokenService } from './../services/TokenService';
 
 export class AuthController {
     constructor(
         private userService: UserService,
         private logger: Logger,
+        private tokenService: TokenService,
     ) {}
 
     async register(
@@ -44,35 +41,20 @@ export class AuthController {
 
             this.logger.info('User has been registered ', { id: user.id });
 
-            let privateKey: Buffer;
-            try {
-                privateKey = fs.readFileSync(
-                    path.join(__dirname, '../../certs/private.pem'),
-                );
-            } catch (error) {
-                const err = createHttpError(
-                    500,
-                    'error while reading privateKey',
-                );
-                next(err);
-                return;
-            }
-
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
             };
 
-            const accessToken = sign(payload, privateKey, {
-                algorithm: 'RS256',
-                expiresIn: '1h',
-                issuer: 'auth-service',
-            });
-            const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET!, {
-                algorithm: 'HS256',
-                expiresIn: '1y',
-                issuer: 'auth-service',
-            });
+            const accessToken = this.tokenService.generateAccessToken(payload);
+
+            const newRefreshToken =
+                await this.tokenService.persistRefreshToken(user);
+
+            const refreshToken = this.tokenService.generateRefreshToken(
+                payload,
+                newRefreshToken.id,
+            );
 
             res.cookie('accessToken', accessToken, {
                 domain: 'localhost',
