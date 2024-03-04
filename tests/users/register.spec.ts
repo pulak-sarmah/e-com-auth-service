@@ -1,9 +1,10 @@
-import { AppDataSource } from './../../src/config/data-source';
-import { DataSource } from 'typeorm';
 import request from 'supertest';
+import { DataSource } from 'typeorm';
 import { app } from '../../src/app';
-import { User } from '../../src/entity/User';
 import { Roles } from '../../src/constants';
+import { User } from '../../src/entity/User';
+import { AppDataSource } from './../../src/config/data-source';
+import { RefreshToken } from './../../src/entity/RefreshToken';
 
 import { isJwt } from '../utils';
 
@@ -178,6 +179,35 @@ describe('POST /auth/register', () => {
             expect(refreshToken).not.toBeNull();
             expect(isJwt(accessToken)).toBeTruthy();
             expect(isJwt(refreshToken)).toBeTruthy();
+        });
+
+        it('should store the refresh token to the database', async () => {
+            //arrange
+            const userData = {
+                firstName: 'john',
+                lastName: 'Doe',
+                email: 'johndoe@gmail.com',
+                password: 'secret12',
+            };
+            // act
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            // assert
+            const refreshTokenRepo = connection.getRepository(RefreshToken);
+            const refreshToken = await refreshTokenRepo.find();
+
+            expect(refreshToken).toHaveLength(1);
+
+            const tokens = await refreshTokenRepo
+                .createQueryBuilder('refreshToken')
+                .where('refreshToken.userId = :userId', {
+                    userId: response.body.id,
+                })
+                .getMany();
+
+            expect(tokens).toHaveLength(1);
         });
     });
 
