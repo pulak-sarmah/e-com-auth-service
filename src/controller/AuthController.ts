@@ -73,12 +73,7 @@ export class AuthController {
                 httpOnly: true,
             });
 
-            res.status(201).json({
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-            });
+            res.status(201).json({ ...user, password: undefined });
         } catch (error) {
             next(error);
             return;
@@ -169,6 +164,6 @@ export class AuthController {
 
     async self(req: AuthRequest, res: Response) {
         const user = await this.userService.findById(Number(req.auth.sub));
-        res.json(user);
+        res.json({ ...user, password: undefined });
     }
 }

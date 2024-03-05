@@ -67,6 +67,32 @@ describe('GET /auth/self', () => {
 
             expect(response.body.id).toBe(data.id);
         });
+
+        it('should not return the password field', async () => {
+            const userRepository = connection.getRepository(User);
+            const userData = {
+                firstName: 'john',
+                lastName: 'Doe',
+                email: 'johndoe@gmail.com',
+                password: 'secret12',
+            };
+            const data = await userRepository.save({
+                ...userData,
+                role: Roles.CUSTOMER,
+            });
+
+            const accessToken = jwks.token({
+                sub: String(data.id),
+                role: data.role,
+            });
+
+            const response = await request(app)
+                .get('/auth/self')
+                .set('Cookie', [`accessToken= ${accessToken};`])
+                .send();
+
+            expect(response.body).not.toHaveProperty('password');
+        });
     });
 
     describe('fields are missing', () => {});
