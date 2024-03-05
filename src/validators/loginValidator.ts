@@ -15,5 +15,6 @@ export default checkSchema({
     password: {
         notEmpty: true,
         escape: true,
+        trim: true,
     },
 });
