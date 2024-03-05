@@ -43,10 +43,8 @@ router
 
 router
     .route('/self')
-    .get(
-        authenticateMiddleware,
-        (req: Request, res: Response, next: NextFunction) =>
-            authController.self(req as AuthRequest, res, next),
+    .get(authenticateMiddleware, (req: Request, res: Response) =>
+        authController.self(req as AuthRequest, res),
     );
 
 export default router;
