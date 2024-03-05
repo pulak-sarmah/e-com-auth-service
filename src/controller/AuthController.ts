@@ -4,7 +4,7 @@ import createHttpError from 'http-errors';
 import { JwtPayload } from 'jsonwebtoken';
 import { Logger } from 'winston';
 import { UserService } from '../services/UserService';
-import { RegisterUserRequest } from '../types';
+import { AuthRequest, RegisterUserRequest } from '../types';
 import { CredentialService } from './../services/CredentialService';
 import { TokenService } from './../services/TokenService';
 
@@ -165,5 +165,10 @@ export class AuthController {
             next(error);
             return;
         }
+    }
+
+    async self(req: AuthRequest, res: Response) {
+        const user = await this.userService.findById(Number(req.auth.sub));
+        res.json(user);
     }
 }
