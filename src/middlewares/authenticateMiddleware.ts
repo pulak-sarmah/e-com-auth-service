@@ -2,6 +2,7 @@ import { GetVerificationKey, expressjwt } from 'express-jwt';
 import jwksClient from 'jwks-rsa';
 import { Config } from '../config';
 import { Request } from 'express';
+import { AuthCookie } from '../types';
 
 export default expressjwt({
     secret: jwksClient.expressJwtSecret({
@@ -20,10 +21,6 @@ export default expressjwt({
                 return token;
             }
         }
-
-        type AuthCookie = {
-            accessToken: string;
-        };
 
         const { accessToken } = req.cookies as AuthCookie;
 

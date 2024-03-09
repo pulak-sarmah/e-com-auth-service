@@ -40,13 +40,17 @@ export class TokenService {
         return newRefreshToken;
     }
 
-    generateRefreshToken(payload: JwtPayload, id: number) {
+    generateRefreshToken(payload: JwtPayload) {
         const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET!, {
             algorithm: 'HS256',
             expiresIn: '1y',
             issuer: 'auth-service',
-            jwtid: String(id),
+            jwtid: String(payload.id),
         });
         return refreshToken;
+    }
+
+    async deleteRefreshToken(tokenId: number) {
+        return await this.refreshTokenRepo.delete({ id: tokenId });
     }
 }
