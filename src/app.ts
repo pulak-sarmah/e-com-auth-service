@@ -14,8 +14,10 @@ app.get('/', (req, res) => {
 });
 
 import authRouter from './routes/authRoutes';
+import tenantRouter from './routes/tenantRoutes';
 
 app.use('/auth', authRouter);
+app.use('/tenants', tenantRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
