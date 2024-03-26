@@ -18,12 +18,4 @@ module.exports = {
         '@typescript-eslint/require-await': 'off',
         '@typescript-eslint/no-misused-promises': 0,
     },
-    // overrides: [
-    //     {
-    //         files: ['.eslintrc.cjs', 'tests/**/*.spec.ts', 'tests/**/*.ts'],
-    //         rules: {
-    //             '@typescript-eslint/await-thenable': 'off',
-    //         },
-    //     },
-    // ],
 };
