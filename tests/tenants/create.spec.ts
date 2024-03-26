@@ -1,7 +1,7 @@
-import { DataSource } from 'typeorm';
 import { AppDataSource } from './../../src/config/data-source';
 import request from 'supertest';
 import { app } from '../../src/app';
+import { DataSource } from 'typeorm';
 
 describe('POST /tenants', () => {
     let connection: DataSource;
