@@ -4,6 +4,7 @@ import { TenantService } from '../services/TenantService';
 import { AppDataSource } from '../config/data-source';
 import { Tenant } from '../entity/Tenant';
 import logger from '../config/logger';
+import authenticateMiddleware from '../middlewares/authenticateMiddleware';
 
 const router = express.Router();
 
@@ -13,8 +14,10 @@ const tenantController = new TenantController(tenantService, logger);
 
 router
     .route('/')
-    .post((req: Request, res: Response, next: NextFunction) =>
-        tenantController.create(req, res, next),
+    .post(
+        authenticateMiddleware,
+        (req: Request, res: Response, next: NextFunction) =>
+            tenantController.create(req, res, next),
     );
 
 export default router;
