@@ -33,6 +33,23 @@ describe('POST /tenants', () => {
             // Assert
             expect(response.statusCode).toBe(201);
         });
+
+        it('should create a tenant in the db', async () => {
+            // Arrange
+            const tenantData = {
+                name: 'John',
+                address: 'xxx xxx xxx',
+            };
+            // Act
+            await request(app).post('/tenants').send(tenantData);
+
+            const tenantRepository = connection.getRepository('Tenant');
+            const tenants = await tenantRepository.find();
+            // Assert
+            expect(tenants).toHaveLength(1);
+            expect(tenants[0].name).toBe(tenantData.name);
+            expect(tenants[0].address).toBe(tenantData.address);
+        });
     });
 
     describe('fields are missing', () => {});

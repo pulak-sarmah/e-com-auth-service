@@ -1,9 +1,20 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import { TenantController } from '../controller/TenantController';
+import { TenantService } from '../services/TenantService';
+import { AppDataSource } from '../config/data-source';
+import { Tenant } from '../entity/Tenant';
+import logger from '../config/logger';
 
 const router = express.Router();
 
-router.route('/').post((req: Request, res: Response) => {
-    res.status(201).json({});
-});
+const tenantRepo = AppDataSource.getRepository(Tenant);
+const tenantService = new TenantService(tenantRepo);
+const tenantController = new TenantController(tenantService, logger);
+
+router
+    .route('/')
+    .post((req: Request, res: Response, next: NextFunction) =>
+        tenantController.create(req, res, next),
+    );
 
 export default router;
