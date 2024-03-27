@@ -88,6 +88,8 @@ describe('POST /tenants', () => {
             expect(tenants).toHaveLength(0);
             expect(response.statusCode).toBe(401);
         });
+
+        it('should return 403 if user is not an admin', async () => {});
     });
 
     describe('fields are missing', () => {});
