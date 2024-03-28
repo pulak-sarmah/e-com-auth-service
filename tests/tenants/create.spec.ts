@@ -5,7 +5,7 @@ import { DataSource } from 'typeorm';
 import createJWKSMock from 'mock-jwks';
 import { Roles } from '../../src/constants';
 
-describe('POST /tenants', () => {
+describe('(POST,GET PATCH, DELETE) /tenants', () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
     let adminToken: string;
@@ -155,212 +155,105 @@ describe('POST /tenants', () => {
     });
 
     describe('fields are not in proper format', () => {});
-});
 
-describe('GET /tenants', () => {
-    let connection: DataSource;
-    let jwks: ReturnType<typeof createJWKSMock>;
-    let adminToken: string;
+    it('should return tenant list', async () => {
+        // Arrange
+        const tenantData = {
+            name: 'John',
+            address: 'xxx xxx xxx',
+        };
+        // Act
+        await request(app)
+            .post('/tenants')
+            .set('Cookie', [`accessToken=${adminToken}`])
+            .send(tenantData);
 
-    beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:6001');
-        connection = await AppDataSource.initialize();
+        const response = await request(app)
+            .get('/tenants')
+            .set('Cookie', [`accessToken=${adminToken}`]);
+
+        // Assert
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toHaveLength(1);
     });
 
-    beforeEach(async () => {
-        jwks.start();
-        await connection.dropDatabase();
-        await connection.synchronize();
-        jwks.start();
+    it('Should return the correct tenants given the id', async () => {
+        // Arrange
+        const tenantData = {
+            name: 'John',
+            address: 'xxx xxx xxx',
+        };
+        // Act
+        const createResponse = await request(app)
+            .post('/tenants')
+            .set('Cookie', [`accessToken=${adminToken}`])
+            .send(tenantData);
 
-        adminToken = jwks.token({
-            sub: '1',
-            role: Roles.ADMIN,
-        });
+        const tenantId = createResponse.body.id;
+
+        const response = await request(app)
+            .get(`/tenants/${tenantId}`)
+            .set('Cookie', [`accessToken=${adminToken}`]);
+
+        // Assert
+        expect(response.statusCode).toBe(200);
+        expect(response.body.name).toBe(tenantData.name);
+        expect(response.body.address).toBe(tenantData.address);
     });
 
-    afterAll(async () => {
-        await connection.destroy();
+    it('should be able to update a tenant', async () => {
+        // Arrange
+        const tenantData = {
+            name: 'John',
+            address: 'xxx xxx xxx',
+        };
+        // Act
+        const createResponse = await request(app)
+            .post('/tenants')
+            .set('Cookie', [`accessToken=${adminToken}`])
+            .send(tenantData);
+
+        const tenantId = createResponse.body.id;
+
+        const updateData = {
+            name: 'Jane',
+            address: 'yyy yyy yyy',
+        };
+
+        const response = await request(app)
+            .patch(`/tenants/${tenantId}`)
+            .set('Cookie', [`accessToken=${adminToken}`])
+            .send(updateData);
+
+        // Assert
+        expect(response.statusCode).toBe(200);
+        expect(response.body.name).toBe(updateData.name);
+        expect(response.body.address).toBe(updateData.address);
     });
 
-    afterEach(async () => {
-        jwks.stop();
-    });
+    it('should be able to destroy a tenant', async () => {
+        // Arrange
+        const tenantData = {
+            name: 'John',
+            address: 'xxx xxx xxx',
+        };
+        // Act
+        const createResponse = await request(app)
+            .post('/tenants')
+            .set('Cookie', [`accessToken=${adminToken}`])
+            .send(tenantData);
 
-    describe('Given all fields', () => {
-        it('should return tenant list', async () => {
-            // Arrange
-            const tenantData = {
-                name: 'John',
-                address: 'xxx xxx xxx',
-            };
-            // Act
-            await request(app)
-                .post('/tenants')
-                .set('Cookie', [`accessToken=${adminToken}`])
-                .send(tenantData);
+        const tenantId = createResponse.body.id;
 
-            const response = await request(app)
-                .get('/tenants')
-                .set('Cookie', [`accessToken=${adminToken}`]);
+        const response = await request(app)
+            .delete(`/tenants/${tenantId}`)
+            .set('Cookie', [`accessToken=${adminToken}`]);
 
-            // Assert
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toHaveLength(1);
-        });
+        // Assert
+        expect(response.statusCode).toBe(204);
 
-        it('Should return the correct tenants given the id', async () => {
-            // Arrange
-            const tenantData = {
-                name: 'John',
-                address: 'xxx xxx xxx',
-            };
-            // Act
-            const createResponse = await request(app)
-                .post('/tenants')
-                .set('Cookie', [`accessToken=${adminToken}`])
-                .send(tenantData);
-
-            const tenantId = createResponse.body.id;
-
-            const response = await request(app)
-                .get(`/tenants/${tenantId}`)
-                .set('Cookie', [`accessToken=${adminToken}`]);
-
-            // Assert
-            expect(response.statusCode).toBe(200);
-            expect(response.body.name).toBe(tenantData.name);
-            expect(response.body.address).toBe(tenantData.address);
-        });
-    });
-
-    describe('fields are missing', () => {});
-
-    describe('fields are not in proper format', () => {});
-});
-
-describe('PATCH /tenants', () => {
-    let connection: DataSource;
-    let jwks: ReturnType<typeof createJWKSMock>;
-    let adminToken: string;
-
-    beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:6001');
-        connection = await AppDataSource.initialize();
-    });
-
-    beforeEach(async () => {
-        jwks.start();
-        await connection.dropDatabase();
-        await connection.synchronize();
-        jwks.start();
-
-        adminToken = jwks.token({
-            sub: '1',
-            role: Roles.ADMIN,
-        });
-    });
-
-    afterAll(async () => {
-        await connection.destroy();
-    });
-
-    afterEach(async () => {
-        jwks.stop();
-    });
-
-    describe('Given all fields', () => {
-        it('should be able to update a tenant', async () => {
-            // Arrange
-            const tenantData = {
-                name: 'John',
-                address: 'xxx xxx xxx',
-            };
-            // Act
-            const createResponse = await request(app)
-                .post('/tenants')
-                .set('Cookie', [`accessToken=${adminToken}`])
-                .send(tenantData);
-
-            const tenantId = createResponse.body.id;
-
-            const updateData = {
-                name: 'Jane',
-                address: 'yyy yyy yyy',
-            };
-
-            const response = await request(app)
-                .patch(`/tenants/${tenantId}`)
-                .set('Cookie', [`accessToken=${adminToken}`])
-                .send(updateData);
-
-            // Assert
-            expect(response.statusCode).toBe(200);
-            expect(response.body.name).toBe(updateData.name);
-            expect(response.body.address).toBe(updateData.address);
-        });
-    });
-
-    describe('fields are missing', () => {});
-
-    describe('fields are not in proper format', () => {});
-});
-
-describe('DELETE /tenants', () => {
-    let connection: DataSource;
-    let jwks: ReturnType<typeof createJWKSMock>;
-    let adminToken: string;
-
-    beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:6001');
-        connection = await AppDataSource.initialize();
-    });
-
-    beforeEach(async () => {
-        jwks.start();
-        await connection.dropDatabase();
-        await connection.synchronize();
-        jwks.start();
-
-        adminToken = jwks.token({
-            sub: '1',
-            role: Roles.ADMIN,
-        });
-    });
-
-    afterAll(async () => {
-        await connection.destroy();
-    });
-
-    afterEach(async () => {
-        jwks.stop();
-    });
-
-    describe('Given all fields', () => {
-        it('should be able to destroy a tenant', async () => {
-            // Arrange
-            const tenantData = {
-                name: 'John',
-                address: 'xxx xxx xxx',
-            };
-            // Act
-            const createResponse = await request(app)
-                .post('/tenants')
-                .set('Cookie', [`accessToken=${adminToken}`])
-                .send(tenantData);
-
-            const tenantId = createResponse.body.id;
-
-            const response = await request(app)
-                .delete(`/tenants/${tenantId}`)
-                .set('Cookie', [`accessToken=${adminToken}`]);
-
-            // Assert
-            expect(response.statusCode).toBe(204);
-
-            const tenantRepository = connection.getRepository('Tenant');
-            const tenants = await tenantRepository.find();
-            expect(tenants).toHaveLength(0);
-        });
+        const tenantRepository = connection.getRepository('Tenant');
+        const tenants = await tenantRepository.find();
+        expect(tenants).toHaveLength(0);
     });
 });
