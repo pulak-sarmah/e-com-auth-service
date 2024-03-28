@@ -33,4 +33,13 @@ router
             userController.getAll(req, res, next),
     );
 
+router
+    .route('/:id')
+    .get(
+        authenticateMiddleware,
+        canAccess([Roles.ADMIN]),
+        (req: Request, res: Response, next: NextFunction) =>
+            userController.getById(req, res, next),
+    );
+
 export default router;
