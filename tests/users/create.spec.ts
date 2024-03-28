@@ -165,6 +165,71 @@ describe('POST /users', () => {
             expect(response.statusCode).toBe(200);
             expect(response.body.email).toBe(userData.email);
         });
+
+        it('Should be able to update a user', async () => {
+            const adminToken = jwks.token({
+                sub: '1',
+                role: Roles.ADMIN,
+            });
+
+            const userData = {
+                firstName: 'john',
+                lastName: 'doe',
+                email: 'john@doe.com',
+                password: 'password',
+                role: Roles.MANAGER,
+            };
+
+            await request(app)
+                .post('/users')
+                .set('Cookie', [`accessToken=${adminToken}`])
+                .send(userData);
+
+            const userRepository = connection.getRepository(User);
+            const users = await userRepository.find();
+
+            const response = await request(app)
+                .patch(`/users/${users[0]?.id}`)
+                .set('Cookie', [`accessToken=${adminToken}`])
+                .send({
+                    ...userData,
+                    firstName: 'Jane',
+                    role: Roles.CUSTOMER,
+                });
+        });
+    });
+
+    it('should be able to delete a user', async () => {
+        const adminToken = jwks.token({
+            sub: '1',
+            role: Roles.ADMIN,
+        });
+
+        const userData = {
+            firstName: 'john',
+            lastName: 'doe',
+            email: 'john@doe.com',
+            password: 'password',
+            role: Roles.MANAGER,
+        };
+
+        await request(app)
+            .post('/users')
+            .set('Cookie', [`accessToken=${adminToken}`])
+            .send(userData);
+
+        const userRepository = connection.getRepository(User);
+        const users = await userRepository.find();
+
+        const response = await request(app)
+            .delete(`/users/${users[0]?.id}`)
+            .set('Cookie', [`accessToken=${adminToken}`]);
+
+        expect(response.statusCode).toBe(204);
+        const user = await userRepository.findOne({
+            where: { id: users[0]?.id },
+        });
+        expect(user).toBeNull();
     });
 
     describe('fields are missing', () => {});

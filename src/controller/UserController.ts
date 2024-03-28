@@ -2,7 +2,8 @@ import { Roles } from './../constants/index';
 import { NextFunction, Response } from 'express';
 import { UserService } from '../services/UserService';
 import { validationResult } from 'express-validator';
-import { CreateUserReq } from '../types';
+import { CreateUserReq, UpdateUserRequest } from '../types';
+import createHttpError from 'http-errors';
 
 export class UserController {
     constructor(private userService: UserService) {}
@@ -46,6 +47,48 @@ export class UserController {
             res.status(200).json(user);
         } catch (error) {
             next(error);
+        }
+    }
+
+    async deleteUser(req: CreateUserReq, res: Response, next: NextFunction) {
+        const { id } = req.params;
+        try {
+            await this.userService.deleteById(Number(id));
+            res.status(204).end();
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async updateUser(
+        req: UpdateUserRequest,
+        res: Response,
+        next: NextFunction,
+    ) {
+        // Validation
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            return res.status(400).json({ errors: result.array() });
+        }
+
+        const { firstName, lastName, role } = req.body;
+        const userId = req.params.id;
+
+        if (isNaN(Number(userId))) {
+            next(createHttpError(400, 'Invalid url param.'));
+            return;
+        }
+
+        try {
+            await this.userService.updateUser(Number(userId), {
+                firstName,
+                lastName,
+                role,
+            });
+
+            res.json({ id: Number(userId) });
+        } catch (err) {
+            next(err);
         }
     }
 }
