@@ -1,7 +1,8 @@
 dist
 node_modules
 *.spec.ts
-tests/
 .github
 .eslintrc.cjs
 jest.config.js
+**/*.spec.ts
+tests
