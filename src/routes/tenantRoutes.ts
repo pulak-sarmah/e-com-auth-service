@@ -27,11 +27,29 @@ router
 router
     .route('/')
     .get(
-        tenantValidator,
         authenticateMiddleware,
         canAccess([Roles.ADMIN]),
         (req: Request, res: Response, next: NextFunction) =>
             tenantController.getAll(req, res, next),
+    );
+
+router
+    .route('/:id')
+    .get(
+        authenticateMiddleware,
+        canAccess([Roles.ADMIN]),
+        (req: Request, res: Response, next: NextFunction) =>
+            tenantController.getById(req, res, next),
+    );
+
+router
+    .route('/:id')
+    .patch(
+        tenantValidator,
+        authenticateMiddleware,
+        canAccess([Roles.ADMIN]),
+        (req: Request, res: Response, next: NextFunction) =>
+            tenantController.update(req, res, next),
     );
 
 export default router;

@@ -12,4 +12,23 @@ export class TenantService {
     async getAllTenants() {
         return await this.tenantRepository.find();
     }
+
+    async getTenantById(id: string) {
+        return await this.tenantRepository.findOneBy({ id: Number(id) });
+    }
+
+    async updateTenant(id: string, tenantData: Itenant) {
+        const tenant = await this.tenantRepository.findOneBy({
+            id: Number(id),
+        });
+
+        if (!tenant) {
+            return null;
+        }
+
+        tenant.name = tenantData.name || tenant.name;
+        tenant.address = tenantData.address || tenant.address;
+
+        return await this.tenantRepository.save(tenant);
+    }
 }
