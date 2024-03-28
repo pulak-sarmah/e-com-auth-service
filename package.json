@@ -4,7 +4,7 @@
     "description": "auth service for the e-commerce application",
     "main": "index.js",
     "scripts": {
-        "buid": "tsc",
+        "build": "tsc",
         "dev": "cross-env NODE_ENV=DEV nodemon src/server.ts",
         "format:check": "prettier . --check",
         "format:fix": "prettier . --write",
