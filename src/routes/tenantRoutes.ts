@@ -8,6 +8,7 @@ import authenticateMiddleware from '../middlewares/authenticateMiddleware';
 import tenantValidator from '../validators/tenantValidator';
 import { canAccess } from '../middlewares/canAccessMiddleware';
 import { Roles } from '../constants';
+
 const router = express.Router();
 
 const tenantRepo = AppDataSource.getRepository(Tenant);
