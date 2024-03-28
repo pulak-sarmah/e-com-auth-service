@@ -4,6 +4,7 @@ import { app } from '../../src/app';
 import { DataSource } from 'typeorm';
 import createJWKSMock from 'mock-jwks';
 import { Roles } from '../../src/constants';
+import { body } from 'express-validator';
 
 describe('(POST,GET PATCH, DELETE) /tenants', () => {
     let connection: DataSource;
@@ -163,14 +164,13 @@ describe('(POST,GET PATCH, DELETE) /tenants', () => {
             address: 'xxx xxx xxx',
         };
         // Act
-        await request(app)
+        const postRes = await request(app)
             .post('/tenants')
             .set('Cookie', [`accessToken=${adminToken}`])
             .send(tenantData);
 
-        const response = await request(app)
-            .get('/tenants')
-            .set('Cookie', [`accessToken=${adminToken}`]);
+        console.log(postRes.body);
+        const response = await request(app).get('/tenants');
 
         // Assert
         expect(response.statusCode).toBe(200);

@@ -27,11 +27,8 @@ router
 
 router
     .route('/')
-    .get(
-        authenticateMiddleware,
-        canAccess([Roles.ADMIN]),
-        (req: Request, res: Response, next: NextFunction) =>
-            tenantController.getAll(req, res, next),
+    .get((req: Request, res: Response, next: NextFunction) =>
+        tenantController.getAll(req, res, next),
     );
 
 router
