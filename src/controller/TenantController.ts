@@ -101,4 +101,23 @@ export class TenantController {
             next(error);
         }
     }
+
+    async delete(req: CreateTenantReq, res: Response, next: NextFunction) {
+        const { id } = req.params;
+
+        this.logger.debug('Request for deleting a tenant', { id });
+
+        try {
+            const tenant = await this.tenantService.deleteTenant(id);
+
+            if (!tenant) {
+                res.status(404).json({ message: 'Tenant not found' });
+                return;
+            }
+
+            res.status(204).send();
+        } catch (error) {
+            next(error);
+        }
+    }
 }

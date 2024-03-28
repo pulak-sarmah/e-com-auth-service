@@ -31,4 +31,16 @@ export class TenantService {
 
         return await this.tenantRepository.save(tenant);
     }
+
+    async deleteTenant(id: string) {
+        const tenant = await this.tenantRepository.findOneBy({
+            id: Number(id),
+        });
+
+        if (!tenant) {
+            return null;
+        }
+
+        return await this.tenantRepository.remove(tenant);
+    }
 }

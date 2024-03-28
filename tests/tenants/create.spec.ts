@@ -305,3 +305,62 @@ describe('PATCH /tenants', () => {
 
     describe('fields are not in proper format', () => {});
 });
+
+describe('DELETE /tenants', () => {
+    let connection: DataSource;
+    let jwks: ReturnType<typeof createJWKSMock>;
+    let adminToken: string;
+
+    beforeAll(async () => {
+        jwks = createJWKSMock('http://localhost:6001');
+        connection = await AppDataSource.initialize();
+    });
+
+    beforeEach(async () => {
+        jwks.start();
+        await connection.dropDatabase();
+        await connection.synchronize();
+        jwks.start();
+
+        adminToken = jwks.token({
+            sub: '1',
+            role: Roles.ADMIN,
+        });
+    });
+
+    afterAll(async () => {
+        await connection.destroy();
+    });
+
+    afterEach(async () => {
+        jwks.stop();
+    });
+
+    describe('Given all fields', () => {
+        it('should be able to destroy a tenant', async () => {
+            // Arrange
+            const tenantData = {
+                name: 'John',
+                address: 'xxx xxx xxx',
+            };
+            // Act
+            const createResponse = await request(app)
+                .post('/tenants')
+                .set('Cookie', [`accessToken=${adminToken}`])
+                .send(tenantData);
+
+            const tenantId = createResponse.body.id;
+
+            const response = await request(app)
+                .delete(`/tenants/${tenantId}`)
+                .set('Cookie', [`accessToken=${adminToken}`]);
+
+            // Assert
+            expect(response.statusCode).toBe(204);
+
+            const tenantRepository = connection.getRepository('Tenant');
+            const tenants = await tenantRepository.find();
+            expect(tenants).toHaveLength(0);
+        });
+    });
+});
