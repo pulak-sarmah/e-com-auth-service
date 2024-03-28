@@ -24,4 +24,14 @@ router
             tenantController.create(req, res, next),
     );
 
+router
+    .route('/')
+    .get(
+        tenantValidator,
+        authenticateMiddleware,
+        canAccess([Roles.ADMIN]),
+        (req: Request, res: Response, next: NextFunction) =>
+            tenantController.getAll(req, res, next),
+    );
+
 export default router;

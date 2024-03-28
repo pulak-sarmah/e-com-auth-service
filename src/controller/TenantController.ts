@@ -27,4 +27,20 @@ export class TenantController {
             next(error);
         }
     }
+
+    async getAll(req: CreateTenantReq, res: Response, next: NextFunction) {
+        this.logger.debug('Request for getting all tenants');
+
+        try {
+            const tenants = await this.tenantService.getAllTenants();
+
+            this.logger.info('Tenants has been fetched', {
+                count: tenants.length,
+            });
+
+            res.status(200).json(tenants);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

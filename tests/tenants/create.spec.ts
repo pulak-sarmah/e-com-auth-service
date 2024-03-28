@@ -114,6 +114,29 @@ describe('POST /tenants', () => {
             expect(response.statusCode).toBe(403);
             expect(tenants).toHaveLength(0);
         });
+
+        it('should return tenant list', async () => {
+            // Arrange
+            const tenantData = {
+                name: 'John',
+                address: 'xxx xxx xxx',
+            };
+            // Act
+            await request(app)
+                .post('/tenants')
+                .set('Cookie', [`accessToken=${adminToken}`])
+                .send(tenantData);
+
+            const response = await request(app)
+                .get('/tenants')
+                .set('Cookie', [`accessToken=${adminToken}`]);
+
+            // Assert
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toHaveLength(1);
+        });
+
+        it('Should return the correct tenants given the id', async () => {});
     });
 
     describe('fields are missing', () => {});
