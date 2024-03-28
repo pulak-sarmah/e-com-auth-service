@@ -24,4 +24,13 @@ router
             userController.create(req, res, next),
     );
 
+router
+    .route('/')
+    .get(
+        authenticateMiddleware,
+        canAccess([Roles.ADMIN]),
+        (req: Request, res: Response, next: NextFunction) =>
+            userController.getAll(req, res, next),
+    );
+
 export default router;

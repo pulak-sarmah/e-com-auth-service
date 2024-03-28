@@ -26,4 +26,13 @@ export class UserController {
             next(error);
         }
     }
+
+    async getAll(req: CreateUserReq, res: Response, next: NextFunction) {
+        try {
+            const users = await this.userService.getAll();
+            res.status(200).json(users);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

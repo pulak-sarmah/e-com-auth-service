@@ -107,6 +107,34 @@ describe('POST /users', () => {
 
             expect(response.statusCode).toBe(403);
         });
+
+        it('Should get the user list', async () => {
+            const adminToken = jwks.token({
+                sub: '1',
+                role: Roles.ADMIN,
+            });
+
+            // Register user
+            const userData = {
+                firstName: 'john',
+                lastName: 'doe',
+                email: 'john@doe.com',
+                password: 'password',
+                role: Roles.MANAGER,
+            };
+
+            await request(app)
+                .post('/users')
+                .set('Cookie', [`accessToken=${adminToken}`])
+                .send(userData);
+
+            const response = await request(app)
+                .get('/users')
+                .set('Cookie', [`accessToken=${adminToken}`]);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toHaveLength(1);
+        });
     });
 
     describe('fields are missing', () => {});
