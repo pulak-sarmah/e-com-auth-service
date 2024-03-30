@@ -124,7 +124,7 @@ describe('POST /auth/register', () => {
 
             expect(user[0].password).not.toBe(userData.password);
             expect(user[0].password).toHaveLength(60);
-            expect(user[0].password).toMatch(/^\$2b\$\d+\$/);
+            expect(user[0].password).toMatch(/^\$2a\$\d+\$/);
         });
 
         it('should return statusCode code 400 , if email already exists', async () => {
