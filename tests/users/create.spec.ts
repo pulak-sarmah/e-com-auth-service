@@ -12,7 +12,7 @@ describe('POST /users', () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
     beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:6001');
+        jwks = createJWKSMock('http://localhost:5501');
         connection = await AppDataSource.initialize();
     });
 
@@ -200,6 +200,8 @@ describe('POST /users', () => {
                     firstName: 'Jane',
                     role: Roles.CUSTOMER,
                 });
+
+            expect(response.statusCode).toBe(200);
         });
     });
 

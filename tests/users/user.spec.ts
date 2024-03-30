@@ -10,7 +10,7 @@ describe('GET /auth/self', () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
     beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:6001');
+        jwks = createJWKSMock('http://localhost:5501');
         connection = await AppDataSource.initialize();
     });
 
@@ -94,7 +94,7 @@ describe('GET /auth/self', () => {
         });
 
         it('should  return 401 status code if token does not exists', async () => {
-            const userRepository = connection.getRepository(User);
+            connection.getRepository(User);
 
             const response = await request(app).get('/auth/self').send();
 

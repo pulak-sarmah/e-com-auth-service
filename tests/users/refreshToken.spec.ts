@@ -11,7 +11,7 @@ describe('POST /auth/refresh', () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
     beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:6001');
+        jwks = createJWKSMock('http://localhost:5501');
         connection = await AppDataSource.initialize();
     });
 

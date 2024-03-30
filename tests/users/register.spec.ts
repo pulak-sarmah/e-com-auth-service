@@ -65,9 +65,7 @@ describe('POST /auth/register', () => {
                 email: 'johndoe@gmail.com',
                 password: 'secret12',
             };
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
 
             const userRepository = connection.getRepository(User);
 
@@ -124,7 +122,7 @@ describe('POST /auth/register', () => {
 
             expect(user[0].password).not.toBe(userData.password);
             expect(user[0].password).toHaveLength(60);
-            expect(user[0].password).toMatch(/^\$2b\$\d+\$/);
+            expect(user[0].password).toMatch(/^\$2a\$\d+\$/);
         });
 
         it('should return statusCode code 400 , if email already exists', async () => {
@@ -221,9 +219,7 @@ describe('POST /auth/register', () => {
                 password: 'secret12',
             };
             // Act
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
             const userRepository = connection.getRepository(User);
             const user = await userRepository.find();
 
@@ -240,9 +236,7 @@ describe('POST /auth/register', () => {
                 password: 'secret12',
             };
             // Act
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
             const userRepository = connection.getRepository(User);
             const user = await userRepository.find();
 
@@ -259,9 +253,7 @@ describe('POST /auth/register', () => {
                 password: 'secret12',
             };
             // Act
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
             const userRepository = connection.getRepository(User);
             const user = await userRepository.find();
 

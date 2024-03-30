@@ -41,7 +41,10 @@ export class TokenService {
     }
 
     generateRefreshToken(payload: JwtPayload) {
-        const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET!, {
+        if (!Config.REFRESH_TOKEN_SECRET) {
+            throw new Error('REFRESH_TOKEN_SECRET is not defined');
+        }
+        const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET, {
             algorithm: 'HS256',
             expiresIn: '1y',
             issuer: 'auth-service',

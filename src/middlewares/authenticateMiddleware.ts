@@ -4,9 +4,13 @@ import { Config } from '../config';
 import { Request } from 'express';
 import { AuthCookie } from '../types';
 
+if (!Config.JWKS_URI) {
+    throw new Error('JWKS_URI is not defined');
+}
+
 export default expressjwt({
     secret: jwksClient.expressJwtSecret({
-        jwksUri: Config.JWKS_URI!,
+        jwksUri: Config.JWKS_URI,
         cache: true,
         rateLimit: true,
     }) as GetVerificationKey,

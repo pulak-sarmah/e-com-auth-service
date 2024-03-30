@@ -31,21 +31,21 @@ jobs:
               run: npm run test
 
               env:
-                  DB_HOST: ${{secret.TEST_DB_HOST}}
+                  DB_HOST: ${{ secrets.TEST_DB_HOST }}
 
-                  DB_PORT: ${{secret.TEST_DB_PORT}}
+                  DB_PORT: ${{ secrets.TEST_DB_PORT }}
 
-                  DB_USERNAME: ${{secret.TEST_DB_USERNAME}}
+                  DB_USERNAME: ${{ secrets.TEST_DB_USERNAME }}
 
-                  DB_PASS: ${{secret.TEST_DB_PASS}}
+                  DB_PASS: ${{ secrets.TEST_DB_PASS }}
 
-                  DB_NAME: ${{secret.TEST_DB_NAME}}
+                  DB_NAME: ${{ secrets.TEST_DB_NAME }}
 
-                  REFRSH_TOKEN_SECRET: ${{secret.REFRSH_TOKEN_SECRET}}
+                  REFRESH_TOKEN_SECRET: ${{ secrets.REFRSH_TOKEN_SECRET }}
 
-                  JWKS_URI: ${{secret.JWKS_URI}}
+                  JWKS_URI: ${{ secrets.JWKS_URI }}
 
-                  PRIVATE_KEY: ${{secret.PRIVATE_KEY}}
+                  PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
 
             - name: Build-ts
 
@@ -56,9 +56,9 @@ jobs:
               uses: sonarSource/sonarcloud-github-action@master
 
               env:
-                  SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     build-and-push-docker:
         name: Build and push docker image
@@ -68,7 +68,7 @@ jobs:
         env:
             IMAGE_NAME: codersgyan/auth-service
 
-            IMAGE_TAG: build-${{github.run_number}}
+            IMAGE_TAG: build-${{ github.run_number }}
 
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
@@ -82,14 +82,14 @@ jobs:
               uses: docker/login-action@v1
 
               with:
-                  username: ${{secrets.DOCKERHUB_USERNAME}}
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
 
-                  password: ${{secrets.DOCKERHUB_PASSWORD}}
+                  password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
             - name: Build Docker image
 
-              run: docker build -t ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}} -f docker/prod/Dockerfile .
+              run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f docker/prod/Dockerfile .
 
             - name: Push Docker image to docker hub
 
-              run: docker push ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+              run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}

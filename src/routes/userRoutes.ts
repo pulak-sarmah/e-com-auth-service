@@ -1,4 +1,9 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, {
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
+} from 'express';
 
 import authenticateMiddleware from '../middlewares/authenticateMiddleware';
 import { canAccess } from '../middlewares/canAccessMiddleware';
@@ -18,48 +23,56 @@ const userController = new UserController(userService);
 router
     .route('/')
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware as RequestHandler,
         canAccess([Roles.ADMIN]),
         createUserValidator,
         (req: Request, res: Response, next: NextFunction) =>
-            userController.create(req, res, next),
+            userController.create(req, res, next) as unknown as RequestHandler,
     );
 
 router
     .route('/')
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware as RequestHandler,
         canAccess([Roles.ADMIN]),
         (req: Request, res: Response, next: NextFunction) =>
-            userController.getAll(req, res, next),
+            userController.getAll(req, res, next) as unknown as RequestHandler,
     );
 
 router
     .route('/:id')
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware as RequestHandler,
         canAccess([Roles.ADMIN]),
         (req: Request, res: Response, next: NextFunction) =>
-            userController.getById(req, res, next),
+            userController.getById(req, res, next) as unknown as RequestHandler,
     );
 
 router
     .route('/:id')
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware as RequestHandler,
         canAccess([Roles.ADMIN]),
         (req: Request, res: Response, next: NextFunction) =>
-            userController.deleteUser(req, res, next),
+            userController.deleteUser(
+                req,
+                res,
+                next,
+            ) as unknown as RequestHandler,
     );
 
 router
     .route('/:id')
     .patch(
-        authenticateMiddleware,
+        authenticateMiddleware as RequestHandler,
         canAccess([Roles.ADMIN]),
         updateUserValidator,
         (req: Request, res: Response, next: NextFunction) =>
-            userController.updateUser(req, res, next),
+            userController.updateUser(
+                req,
+                res,
+                next,
+            ) as unknown as RequestHandler,
     );
 
 export default router;

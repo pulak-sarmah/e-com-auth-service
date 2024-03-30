@@ -1,5 +1,4 @@
 import { Tenant } from '../../src/entity/Tenant';
-import { CreateTenantReq } from './../../src/types/index';
 import { DataSource, Repository } from 'typeorm';
 
 export const truncateTable = async (connection: DataSource) => {
