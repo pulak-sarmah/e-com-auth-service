@@ -6,8 +6,12 @@ import logger from '../config/logger';
 import { RefreshToken } from '../entity/RefreshToken';
 import { AuthCookie, IRefreshTokenPayload } from '../types';
 
+if (!Config.REFRESH_TOKEN_SECRET) {
+    throw new Error('REFRESH_TOKEN_SECRET is not defined');
+}
+
 export default expressjwt({
-    secret: Config.REFRESH_TOKEN_SECRET!,
+    secret: Config.REFRESH_TOKEN_SECRET,
     algorithms: ['HS256'],
 
     getToken(req: Request) {

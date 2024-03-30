@@ -200,6 +200,8 @@ describe('POST /users', () => {
                     firstName: 'Jane',
                     role: Roles.CUSTOMER,
                 });
+
+            expect(response.statusCode).toBe(200);
         });
     });
 

@@ -94,7 +94,7 @@ describe('GET /auth/self', () => {
         });
 
         it('should  return 401 status code if token does not exists', async () => {
-            const userRepository = connection.getRepository(User);
+            connection.getRepository(User);
 
             const response = await request(app).get('/auth/self').send();
 

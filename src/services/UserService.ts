@@ -77,14 +77,6 @@ export class UserService {
         return await this.userRepository.delete(userId);
     }
 
-    async getById(id: number) {
-        return await this.userRepository.findOne({
-            where: {
-                id,
-            },
-        });
-    }
-
     async updateUser(
         id: number,
         { firstName, lastName, role }: LimitedUserData,

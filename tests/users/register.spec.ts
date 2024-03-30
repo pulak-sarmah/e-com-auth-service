@@ -65,9 +65,7 @@ describe('POST /auth/register', () => {
                 email: 'johndoe@gmail.com',
                 password: 'secret12',
             };
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
 
             const userRepository = connection.getRepository(User);
 
@@ -221,9 +219,7 @@ describe('POST /auth/register', () => {
                 password: 'secret12',
             };
             // Act
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
             const userRepository = connection.getRepository(User);
             const user = await userRepository.find();
 
@@ -240,9 +236,7 @@ describe('POST /auth/register', () => {
                 password: 'secret12',
             };
             // Act
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
             const userRepository = connection.getRepository(User);
             const user = await userRepository.find();
 
@@ -259,9 +253,7 @@ describe('POST /auth/register', () => {
                 password: 'secret12',
             };
             // Act
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData);
+            await request(app).post('/auth/register').send(userData);
             const userRepository = connection.getRepository(User);
             const user = await userRepository.find();
 
