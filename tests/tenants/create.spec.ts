@@ -12,7 +12,7 @@ describe('(POST,GET PATCH, DELETE) /tenants', () => {
     let adminToken: string;
 
     beforeAll(async () => {
-        jwks = createJWKSMock('http://localhost:6001');
+        jwks = createJWKSMock('http://localhost:5501');
         connection = await AppDataSource.initialize();
     });
 
