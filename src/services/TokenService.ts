@@ -1,7 +1,5 @@
-import fs from 'fs';
 import createHttpError from 'http-errors';
 import { JwtPayload, sign } from 'jsonwebtoken';
-import path from 'path';
 import { Repository } from 'typeorm';
 import { Config } from '../config';
 import { RefreshToken } from '../entity/RefreshToken';
@@ -11,11 +9,13 @@ export class TokenService {
     constructor(private refreshTokenRepo: Repository<RefreshToken>) {}
 
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: Buffer;
+        if (!Config.PRIVATE_KEY) {
+            const err = createHttpError(500, 'KEY is not defined');
+            throw err;
+        }
+        let privateKey: string;
         try {
-            privateKey = fs.readFileSync(
-                path.join(__dirname, '../../certs/private.pem'),
-            );
+            privateKey = Config.PRIVATE_KEY;
         } catch (error) {
             const err = createHttpError(500, 'error while reading privateKey');
             throw err;

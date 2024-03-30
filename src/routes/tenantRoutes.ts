@@ -8,6 +8,7 @@ import authenticateMiddleware from '../middlewares/authenticateMiddleware';
 import tenantValidator from '../validators/tenantValidator';
 import { canAccess } from '../middlewares/canAccessMiddleware';
 import { Roles } from '../constants';
+
 const router = express.Router();
 
 const tenantRepo = AppDataSource.getRepository(Tenant);
@@ -26,11 +27,8 @@ router
 
 router
     .route('/')
-    .get(
-        authenticateMiddleware,
-        canAccess([Roles.ADMIN]),
-        (req: Request, res: Response, next: NextFunction) =>
-            tenantController.getAll(req, res, next),
+    .get((req: Request, res: Response, next: NextFunction) =>
+        tenantController.getAll(req, res, next),
     );
 
 router

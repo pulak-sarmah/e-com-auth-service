@@ -5,6 +5,8 @@ import request from 'supertest';
 import createJWKSMock from 'mock-jwks';
 import { User } from '../../src/entity/User';
 import { Roles } from '../../src/constants';
+import { Tenant } from '../../src/entity/Tenant';
+import { CreateTenant } from '../utils';
 
 describe('POST /users', () => {
     let connection: DataSource;
@@ -34,14 +36,15 @@ describe('POST /users', () => {
                 sub: '1',
                 role: Roles.ADMIN,
             });
-
+            const tenant = await CreateTenant(connection.getRepository(Tenant));
             // Register user
             const userData = {
                 firstName: 'john',
                 lastName: 'doe',
                 email: 'john@doe.com',
                 password: 'password',
-                tenantId: 1,
+                tenantId: tenant.id,
+                role: Roles.MANAGER,
             };
 
             // Add token to cookie
@@ -62,14 +65,15 @@ describe('POST /users', () => {
                 sub: '1',
                 role: Roles.ADMIN,
             });
-
+            const tenant = await CreateTenant(connection.getRepository(Tenant));
             // Register user
             const userData = {
                 firstName: 'john',
                 lastName: 'doe',
                 email: 'john@doe.com',
                 password: 'password',
-                tenantId: 1,
+                tenantId: tenant.id,
+                role: Roles.MANAGER,
             };
 
             // Add token to cookie

@@ -2,11 +2,18 @@ import { Repository } from 'typeorm';
 import { User } from '../entity/User';
 import { LimitedUserData, UserData } from '../types';
 import createHttpError from 'http-errors';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
-    async create({ firstName, lastName, email, password, role }: UserData) {
+    async create({
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+        tenantId,
+    }: UserData) {
         const user = await this.userRepository.findOne({
             where: { email },
         });
@@ -26,6 +33,7 @@ export class UserService {
                 email,
                 password: hashedPassword,
                 role,
+                tenant: tenantId ? { id: tenantId } : undefined,
             });
             return user;
         } catch (error) {
@@ -37,11 +45,19 @@ export class UserService {
         }
     }
 
-    async findByEmail(email: string) {
+    async findByEmailWithPass(email: string) {
         return await this.userRepository.findOne({
             where: {
                 email,
             },
+            select: [
+                'id',
+                'firstName',
+                'lastName',
+                'email',
+                'role',
+                'password',
+            ],
         });
     }
 
