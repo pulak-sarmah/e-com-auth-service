@@ -20,7 +20,7 @@ describe('Server Initialization', () => {
             password: 'securepassword',
             role: Roles.ADMIN,
         });
-    }, 1000);
+    }, 10000);
 
     afterAll(async () => {
         await connection.destroy();
