@@ -6,6 +6,7 @@ export interface UserData {
     password: string;
     role: string;
     tenantId?: number;
+    isAdmin?: boolean;
 }
 export interface RegisterUserRequest extends Request {
     body: UserData;

@@ -47,6 +47,10 @@ jobs:
 
                   PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
 
+                  ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+
+                  ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
+
             - name: Build-ts
 
               run: npm run build
