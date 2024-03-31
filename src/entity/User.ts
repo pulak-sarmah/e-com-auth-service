@@ -21,6 +21,9 @@ export class User {
     @Column()
     role: string;
 
+    @Column({ type: 'boolean', unique: true, nullable: true })
+    isAdmin: boolean | null;
+
     @ManyToOne(() => Tenant)
     tenant: Tenant;
 }
