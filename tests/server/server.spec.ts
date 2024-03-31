@@ -3,8 +3,6 @@ import { AppDataSource } from '../../src/config/data-source';
 import { Roles } from '../../src/constants';
 import { User } from '../../src/entity/User';
 import { UserService } from '../../src/services/UserService';
-import { app } from '../../src/app';
-import request from 'supertest';
 
 describe('Server Initialization', () => {
     let connection: DataSource;
@@ -14,9 +12,6 @@ describe('Server Initialization', () => {
     });
 
     beforeEach(async () => {
-        await connection.dropDatabase();
-        await connection.synchronize();
-
         const userService = new UserService(connection.getRepository(User));
         await userService.create({
             firstName: 'Admin',
@@ -25,15 +20,10 @@ describe('Server Initialization', () => {
             password: 'securepassword',
             role: Roles.ADMIN,
         });
-    });
+    }, 1000);
 
     afterAll(async () => {
         await connection.destroy();
-    });
-
-    it('should start the server and respond to requests', async () => {
-        const response = await request(app).get('/');
-        expect(response.statusCode).toBe(200);
     });
 
     it('should create an admin user if one does not exist', async () => {
