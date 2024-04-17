@@ -3,9 +3,17 @@ import express, { NextFunction, Request, Response } from 'express';
 import logger from './config/logger';
 import { HttpError } from 'http-errors';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const app = express();
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS!.split(',');
+app.use(
+    cors({
+        origin: allowedOrigins,
+        credentials: true,
+    }),
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static('public'));
