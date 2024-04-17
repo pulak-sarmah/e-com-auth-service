@@ -51,6 +51,8 @@ jobs:
 
                   ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
 
+                  ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
+
             - name: Build-ts
 
               run: npm run build
