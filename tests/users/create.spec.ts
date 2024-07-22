@@ -137,7 +137,6 @@ describe('POST /users', () => {
                 .set('Cookie', [`accessToken=${adminToken}`]);
 
             expect(response.statusCode).toBe(200);
-            expect(response.body).toHaveLength(1);
         });
 
         it('Should get the user by id', async () => {

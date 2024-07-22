@@ -14,6 +14,7 @@ import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/User';
 import createUserValidator from '../validators/createUserValidator';
 import updateUserValidator from '../validators/updateUserValidator';
+import listValidators from '../validators/list-validators';
 const router = express.Router();
 
 const userRepository = AppDataSource.getRepository(User);
@@ -35,6 +36,7 @@ router
     .get(
         authenticateMiddleware as RequestHandler,
         canAccess([Roles.ADMIN]),
+        listValidators,
         (req: Request, res: Response, next: NextFunction) =>
             userController.getAll(req, res, next) as unknown as RequestHandler,
     );

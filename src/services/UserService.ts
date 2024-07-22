@@ -1,3 +1,4 @@
+import { QueryParams } from './../types';
 import { Repository } from 'typeorm';
 import { User } from '../entity/User';
 import { LimitedUserData, UserData } from '../types';
@@ -72,8 +73,16 @@ export class UserService {
         });
     }
 
-    async getAll() {
-        return await this.userRepository.find();
+    async getAll(validatedQuery: QueryParams) {
+        const { perPage, currentPage } = validatedQuery;
+        const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+        const result = await queryBuilder
+            .skip((currentPage - 1) * perPage)
+            .take(perPage)
+            .getManyAndCount();
+
+        return result;
     }
 
     async deleteById(userId: number) {
