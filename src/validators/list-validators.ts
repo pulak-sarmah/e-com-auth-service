@@ -2,6 +2,21 @@ import { checkSchema } from 'express-validator';
 
 export default checkSchema(
     {
+        q: {
+            trim: true,
+            customSanitizer: {
+                options: (value: unknown) => {
+                    return value ? value : '';
+                },
+            },
+        },
+        role: {
+            customSanitizer: {
+                options: (value: unknown) => {
+                    return value ? value : '';
+                },
+            },
+        },
         currentPage: {
             customSanitizer: {
                 options: (value) => {
@@ -15,7 +30,7 @@ export default checkSchema(
             customSanitizer: {
                 options: (value) => {
                     const paesedValue = Number(value);
-                    return Number.isNaN(paesedValue) ? 6 : paesedValue;
+                    return Number.isNaN(paesedValue) ? 3 : paesedValue;
                 },
             },
         },

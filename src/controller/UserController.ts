@@ -30,14 +30,16 @@ export class UserController {
     }
 
     async getAll(req: CreateUserReq, res: Response, next: NextFunction) {
-        const validatedQuery = matchedData(req, { onlyValidData: true });
+        const validatedQuery = matchedData(req, {
+            onlyValidData: true,
+        }) as QueryParams;
         try {
-            const [users, count] = await this.userService.getAll(
-                validatedQuery as QueryParams,
-            );
+            const [users, count] =
+                await this.userService.getAll(validatedQuery);
+            // const [users, count] = result ? result : [[], 0];
             res.status(200).json({
-                currentPage: validatedQuery.currentPage as number,
-                perPage: validatedQuery.perPage as number,
+                currentPage: validatedQuery.currentPage,
+                perPage: validatedQuery.perPage,
                 total: count,
                 data: users,
             });
