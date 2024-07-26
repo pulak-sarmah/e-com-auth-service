@@ -96,12 +96,12 @@ export class UserService {
         }
 
         const result = await queryBuilder
+            .leftJoinAndSelect('user.tenant', 'tenant')
             .skip((currentPage - 1) * perPage)
             .take(perPage)
             .orderBy('user.id', 'DESC')
             .getManyAndCount();
         return result;
-        // }
     }
 
     async deleteById(userId: number) {
