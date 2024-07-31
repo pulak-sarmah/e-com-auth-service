@@ -10,7 +10,7 @@ export class UserController {
     async create(req: CreateUserReq, res: Response, next: NextFunction) {
         const result = validationResult(req);
         if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
+            return next(createHttpError(400, result.array()[0].msg as string));
         }
         const { firstName, lastName, email, password, tenantId, role } =
             req.body;
@@ -36,7 +36,6 @@ export class UserController {
         try {
             const [users, count] =
                 await this.userService.getAll(validatedQuery);
-            // const [users, count] = result ? result : [[], 0];
             res.status(200).json({
                 currentPage: validatedQuery.currentPage,
                 perPage: validatedQuery.perPage,
@@ -50,10 +49,16 @@ export class UserController {
 
     async getById(req: CreateUserReq, res: Response, next: NextFunction) {
         const { id } = req.params;
+
+        if (isNaN(Number(id))) {
+            next(createHttpError(400, 'Invalid url param.'));
+            return;
+        }
         try {
             const user = await this.userService.findById(Number(id));
             if (!user) {
-                return res.status(404).json({ message: 'User not found' });
+                next(createHttpError(400, 'User does not exist.'));
+                return;
             }
             res.status(200).json(user);
         } catch (error) {
@@ -79,7 +84,8 @@ export class UserController {
         // Validation
         const result = validationResult(req);
         if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
+            next(createHttpError(400, result.array()));
+            return;
         }
 
         const { firstName, lastName, role, email, tenantId } = req.body;

@@ -3,6 +3,7 @@ import { TenantService } from '../services/TenantService';
 import { CreateTenantReq } from '../types';
 import { Logger } from 'winston';
 import { validationResult } from 'express-validator';
+import createHttpError from 'http-errors';
 
 export class TenantController {
     constructor(
@@ -13,7 +14,8 @@ export class TenantController {
     async create(req: CreateTenantReq, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            next(createHttpError(400, errors.array()[0].msg as string));
+            return;
         }
         const { name, address } = req.body;
 
@@ -58,7 +60,7 @@ export class TenantController {
             const tenant = await this.tenantService.getTenantById(id);
 
             if (!tenant) {
-                res.status(404).json({ message: 'Tenant not found' });
+                next(createHttpError(404, 'Tenant not found'));
                 return;
             }
 
@@ -73,7 +75,8 @@ export class TenantController {
     async update(req: CreateTenantReq, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            next(createHttpError(400, errors.array()[0].msg as string));
+            return;
         }
 
         const { id } = req.params;
@@ -92,7 +95,8 @@ export class TenantController {
             });
 
             if (!tenant) {
-                res.status(404).json({ message: 'Tenant not found' });
+                next(createHttpError(404, 'Tenant not found'));
+
                 return;
             }
 
@@ -111,7 +115,7 @@ export class TenantController {
             const tenant = await this.tenantService.deleteTenant(id);
 
             if (!tenant) {
-                res.status(404).json({ message: 'Tenant not found' });
+                next(createHttpError(404, 'Tenant not found'));
                 return;
             }
 

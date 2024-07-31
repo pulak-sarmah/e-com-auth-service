@@ -24,7 +24,8 @@ export class AuthController {
     ) {
         const result = validationResult(req);
         if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
+            next(createHttpError(400, result.array()[0].msg as string));
+            return;
         }
         const { firstName, lastName, email, password } = req.body;
 
@@ -99,11 +100,7 @@ export class AuthController {
             const user = await this.userService.findByEmailWithPass(email);
 
             if (!user) {
-                const err = createHttpError(
-                    400,
-                    'User or password doesnt match',
-                );
-                next(err);
+                next(createHttpError(400, 'User or password doesnt match'));
                 return;
             }
 
@@ -113,11 +110,7 @@ export class AuthController {
             );
 
             if (!passwordMatch) {
-                const err = createHttpError(
-                    400,
-                    'User or password doesnt match',
-                );
-                next(err);
+                next(createHttpError(400, 'User or password doesnt match'));
                 return;
             }
 
@@ -181,7 +174,7 @@ export class AuthController {
             const user = await this.userService.findById(Number(req.auth.sub));
 
             if (!user) {
-                next(createHttpError(400, 'User invalid'));
+                next(createHttpError(400, 'User not found'));
                 return;
             }
 
