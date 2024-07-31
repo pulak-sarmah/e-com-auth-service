@@ -25,5 +25,5 @@ export class User {
     isAdmin: boolean | null;
 
     @ManyToOne(() => Tenant)
-    tenant: Tenant;
+    tenant: Tenant | null;
 }
