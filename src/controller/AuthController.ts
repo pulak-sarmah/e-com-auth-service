@@ -27,12 +27,13 @@ export class AuthController {
             next(createHttpError(400, result.array()[0].msg as string));
             return;
         }
-        const { firstName, lastName, email, password } = req.body;
+        const { firstName, lastName, email, password, role } = req.body;
 
         this.logger.debug('New request to register a user', {
             firstName,
             lastName,
             email,
+            role,
             password: '****',
         });
 
@@ -42,7 +43,7 @@ export class AuthController {
                 lastName,
                 email,
                 password,
-                role: Roles.CUSTOMER,
+                role: role ? role : Roles.CUSTOMER,
             });
 
             this.logger.info('User has been registered ', { id: user.id });
